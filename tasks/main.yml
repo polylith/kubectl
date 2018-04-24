@@ -3,3 +3,6 @@
 
 - include_tasks: "create_secret.yml"
   when: command == "create_secret"
+
+- include_tasks: "create_configmap.yml"
+  when: command == "create_configmap"

@@ -1,0 +1,21 @@
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: .yml
+  register: path
+
+- copy:
+    content: "{{kubectl_content}}"
+    dest: "{{path.path}}"
+
+- name: create temporary file
+  tempfile:
+    state: file
+    suffix: .config
+  register: kubeconfig_path
+
+- copy:
+    src: "{{env}}.kubeconfig"
+    dest: "{{kubeconfig_path.path}}"
+
+- command: kubectl create configmap {{kubectl_configmap_name}} --from-file="{{path.path}}" --kubeconfig={{kubeconfig_path.path}}
