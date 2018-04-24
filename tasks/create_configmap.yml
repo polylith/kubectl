@@ -1,12 +1,12 @@
-- name: create temporary file
-  tempfile:
-    state: file
-    suffix: .yml
-  register: path
+# Create folder instead of file, because configmap contain the file name
+# and we don't want a random one
+- tempfile:
+    state: directory
+  register: configmap_path
 
 - copy:
     content: "{{kubectl_content}}"
-    dest: "{{path.path}}"
+    dest: "{{configmap_path.path}}/{{kubectl_configmap_name}}.yml"
 
 - name: create temporary file
   tempfile:
@@ -18,4 +18,4 @@
     src: "{{env}}.kubeconfig"
     dest: "{{kubeconfig_path.path}}"
 
-- command: kubectl create configmap {{kubectl_configmap_name}} --from-file="{{path.path}}" --kubeconfig={{kubeconfig_path.path}}
+- command: kubectl create configmap {{kubectl_configmap_name}} --from-file="{{configmap_path.path}}/{{kubectl_configmap_name}}.yml" --kubeconfig={{kubeconfig_path.path}}
