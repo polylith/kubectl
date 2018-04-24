@@ -18,4 +18,9 @@
     src: "{{env}}.kubeconfig"
     dest: "{{kubeconfig_path.path}}"
 
+- command: kubectl get configmap {{kubectl_configmap_name}} --kubeconfig={{kubeconfig_path.path}}
+  register: get_configmap_result
+  failed_when: False
+
 - command: kubectl create configmap {{kubectl_configmap_name}} --from-file="{{configmap_path.path}}/{{kubectl_configmap_name}}.yml" --kubeconfig={{kubeconfig_path.path}}
+  when: get_configmap_result.rc != 0
