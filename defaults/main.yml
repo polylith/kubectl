@@ -1,1 +1,2 @@
 command: apply
+env: default
